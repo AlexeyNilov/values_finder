@@ -101,3 +101,11 @@ func (m *Manager) Close() error {
 	}
 	return nil
 }
+
+// GetFilename returns the name of the session log file
+func (m *Manager) GetFilename() string {
+	if m.file != nil {
+		return m.file.Name()
+	}
+	return ""
+}
