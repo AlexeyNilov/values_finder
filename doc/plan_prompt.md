@@ -4,4 +4,8 @@ From here you should have the foundation to provide a series of prompts for a co
 
 Make sure and separate each prompt section. Use markdown. Each prompt should be tagged as text using code tags. The goal is to output prompts, but context, etc is important as well.
 
-<SPEC>
+Use specification from the attached file
+
+===
+
+Can you make a `todo.md` that I can use as a checklist? Be thorough.
