@@ -3,6 +3,7 @@ package gemini
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -59,13 +60,35 @@ func ParseOptions(input string) []string {
 	return opts.Options
 }
 
+func ExtractPreviousOptions(history []core.Choice) []string {
+	results := make([]string, 0, len(history))
+
+	for i, choice := range history {
+		if choice.Selected < 0 || choice.Selected >= len(choice.Options) {
+			log.Fatalf("invalid Selected index at history[%d]: %d", i, choice.Selected)
+		}
+		results = append(results, choice.Options[choice.Selected])
+	}
+
+	return results
+}
+
+func formatAsJSONString(values []string) string {
+	data, err := json.MarshalIndent(values, "  ", "  ")
+	if err != nil {
+		log.Fatalf("failed to marshal values: %v", err)
+	}
+
+	return fmt.Sprintf("```json\n%s\n```", string(data))
+}
+
 func (c Client) GenerateOptions(history []core.Choice) ([]string, error) {
 	template := util.ReadTemplate("doc/options_prompt.md")
-	// TODO Transform history into string form
+	prevOptions := ExtractPreviousOptions(history)
 	data := struct {
 		Data string
 	}{
-		Data: "[]",
+		Data: formatAsJSONString(prevOptions),
 	}
 	prompt := util.ParseTemplate(template, data)
 	result := c.GenText(prompt)

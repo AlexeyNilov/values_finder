@@ -90,6 +90,4 @@ Example format:
 ---
 
 [User Input from Application]
-```json
 {{.Data}}
-```
