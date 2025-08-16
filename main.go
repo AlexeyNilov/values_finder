@@ -7,7 +7,7 @@ import (
 
 	"github.com/AlexeyNilov/values_finder/config"
 	"github.com/AlexeyNilov/values_finder/core"
-	"github.com/AlexeyNilov/values_finder/gemini"
+	"github.com/AlexeyNilov/values_finder/llm"
 	"github.com/AlexeyNilov/values_finder/session"
 )
 
@@ -27,7 +27,8 @@ func main() {
 
 	// 3. Initialize LLM client (using mock for now)
 	// client := &llm.MockClient{ShouldFail: false}
-	client := &gemini.Client{Model: "gemini-2.0-flash-lite"}
+	client := &llm.LLMClient{}
+	client.Model = "gemini-2.0-flash-lite"
 
 	// 4. Main interaction loop
 	for round := 1; round <= cfg.Rounds; round++ {

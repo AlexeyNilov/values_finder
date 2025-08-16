@@ -35,7 +35,7 @@ Example format:
 ---
 [Examples]
 
-**Example 1: Initial Interaction**
+**Example: Initial Interaction**
 
 * **User Input from Application:**
     ```json
@@ -45,45 +45,8 @@ Example format:
     ```json
     {
       "options": [
-        "Ensuring stability and security for yourself and loved ones",
-        "Seeking new experiences and constant personal growth"
-      ]
-    }
-    ```
-
-**Example 2: Drilling Down after a choice**
-
-* **User Input from Application:**
-    ```json
-    [
-      "Fostering deep connections with a few people"
-    ]
-    ```
-* **Your Expected Output (exploring the *nature* of those connections):**
-    ```json
-    {
-      "options": [
-        "Being completely authentic, even if it causes friction",
-        "Maintaining harmony and loyalty within your close circle"
-      ]
-    }
-    ```
-
-**Example 3: Contrasting after several choices**
-
-* **User Input from Application:**
-    ```json
-    [
-      "Seeking new experiences and constant personal growth",
-      "Making a significant positive impact on the world"
-    ]
-    ```
-* **Your Expected Output (contrasting two different paths to impact/growth):**
-    ```json
-    {
-      "options": [
-        "Achieving mastery through disciplined practice and dedication",
-        "Solving complex problems with creative and unconventional thinking"
+        "option 1",
+        "option 2"
       ]
     }
     ```

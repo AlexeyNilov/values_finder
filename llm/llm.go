@@ -1,43 +1,24 @@
-package gemini
+package llm
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/AlexeyNilov/values_finder/core"
+	"github.com/AlexeyNilov/values_finder/gemini"
 	"github.com/AlexeyNilov/values_finder/util"
-	"google.golang.org/genai"
 )
 
-type Client struct {
-	Model string
+// Client defines the interface for LLM operations
+type Client interface {
+	GenerateOptions(history []core.Choice) ([]string, error)
+	GenerateFinalValues(history []core.Choice) (core.RankedValues, error)
 }
 
-func (c Client) GenText(prompt string) string {
-	ctx := context.Background()
-	apiKey := os.Getenv("GOOGLE_GENAI_API_KEY")
-	client, err := genai.NewClient(ctx, &genai.ClientConfig{
-		APIKey:  apiKey,
-		Backend: genai.BackendGeminiAPI,
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	result, err := client.Models.GenerateContent(
-		ctx,
-		c.Model,
-		genai.Text(prompt),
-		nil,
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return result.Text()
+type LLMClient struct {
+	gemini.Client
 }
 
 type Options struct {
@@ -59,6 +40,23 @@ func ParseOptions(input string) []string {
 	}
 	return opts.Options
 }
+
+func ParseRankedValues(input string) core.RankedValues {
+    // Remove Markdown code fences if present
+    input = strings.TrimSpace(input)
+    input = strings.TrimPrefix(input, "```json")
+    input = strings.TrimSuffix(input, "```")
+    input = strings.TrimSpace(input)
+
+    var values core.RankedValues
+    err := json.Unmarshal([]byte(input), &values)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    return values
+}
+
 
 func ExtractPreviousOptions(history []core.Choice) []string {
 	results := make([]string, 0, len(history))
@@ -82,7 +80,7 @@ func formatAsJSONString(values []string) string {
 	return fmt.Sprintf("```json\n%s\n```", string(data))
 }
 
-func (c Client) GenerateOptions(history []core.Choice) ([]string, error) {
+func (c LLMClient) GenerateOptions(history []core.Choice) ([]string, error) {
 	template := util.ReadTemplate("doc/options_prompt.md")
 	prevOptions := ExtractPreviousOptions(history)
 	data := struct {
@@ -96,6 +94,16 @@ func (c Client) GenerateOptions(history []core.Choice) ([]string, error) {
 	return options, nil
 }
 
-func (c Client) GenerateFinalValues(history []core.Choice) (core.RankedValues, error) {
-	return nil, nil
+func (c LLMClient) GenerateFinalValues(history []core.Choice) (core.RankedValues, error) {
+	template := util.ReadTemplate("doc/rank_prompt.md")
+	prevOptions := ExtractPreviousOptions(history)
+	data := struct {
+		Data string
+	}{
+		Data: formatAsJSONString(prevOptions),
+	}
+	prompt := util.ParseTemplate(template, data)
+	result := c.GenText(prompt)
+	fmt.Println(result)
+	return ParseRankedValues(result), nil
 }

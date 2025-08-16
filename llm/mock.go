@@ -6,12 +6,6 @@ import (
 	"github.com/AlexeyNilov/values_finder/core"
 )
 
-// Client defines the interface for LLM operations
-type Client interface {
-	GenerateOptions(history []core.Choice) ([]string, error)
-	GenerateFinalValues(history []core.Choice) (core.RankedValues, error)
-}
-
 // MockClient implements the Client interface for testing
 type MockClient struct {
 	ShouldFail bool
