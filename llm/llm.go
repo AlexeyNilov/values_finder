@@ -65,6 +65,8 @@ func ExtractPreviousOptions(history []core.Choice) []string {
 		if choice.Selected < 0 || choice.Selected >= len(choice.Options) {
 			log.Fatalf("invalid Selected index at history[%d]: %d", i, choice.Selected)
 		}
+		// TODO add question "option 1 or options 2? choice"
+		// record := choice.Options[0] + " or " + choice.Options[0] + "? User choice: " + choice.Options[choice.Selected]
 		results = append(results, choice.Options[choice.Selected])
 	}
 
