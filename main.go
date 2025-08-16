@@ -7,7 +7,7 @@ import (
 
 	"github.com/AlexeyNilov/values_finder/config"
 	"github.com/AlexeyNilov/values_finder/core"
-	"github.com/AlexeyNilov/values_finder/llm"
+	"github.com/AlexeyNilov/values_finder/gemini"
 	"github.com/AlexeyNilov/values_finder/session"
 )
 
@@ -26,7 +26,8 @@ func main() {
 	defer manager.Close()
 
 	// 3. Initialize LLM client (using mock for now)
-	client := &llm.MockClient{ShouldFail: false}
+	// client := &llm.MockClient{ShouldFail: false}
+	client := &gemini.Client{Model: "gemini-2.0-flash-lite"}
 
 	// 4. Main interaction loop
 	for round := 1; round <= cfg.Rounds; round++ {
@@ -48,7 +49,7 @@ func main() {
 		// Get user input
 		var input string
 		fmt.Print("Enter your choice (1 or 2): ")
-		fmt.Scanln(&input)
+		_, _ = fmt.Scanln(&input)
 
 		// Parse user input (convert from 1-based to 0-based index)
 		selected, err := strconv.Atoi(input)

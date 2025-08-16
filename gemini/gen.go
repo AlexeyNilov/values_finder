@@ -9,7 +9,11 @@ import (
 	"google.golang.org/genai"
 )
 
-func GenText(prompt string) string {
+type Client struct {
+	Model string
+}
+
+func (c Client) GenText(prompt string) string {
 	ctx := context.Background()
 	apiKey := os.Getenv("GOOGLE_GENAI_API_KEY")
 	client, err := genai.NewClient(ctx, &genai.ClientConfig{
@@ -22,7 +26,7 @@ func GenText(prompt string) string {
 
 	result, err := client.Models.GenerateContent(
 		ctx,
-		"gemini-2.0-flash-lite",
+		c.Model,
 		genai.Text(prompt),
 		nil,
 	)
@@ -32,10 +36,10 @@ func GenText(prompt string) string {
 	return result.Text()
 }
 
-func GenerateOptions(history []core.Choice) ([]string, error) {
+func (c Client) GenerateOptions(history []core.Choice) ([]string, error) {
 	return nil, nil
 }
 
-func GenerateFinalValues(history []core.Choice) (core.RankedValues, error) {
+func (c Client) GenerateFinalValues(history []core.Choice) (core.RankedValues, error) {
 	return nil, nil
 }
